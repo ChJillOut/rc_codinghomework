@@ -10,13 +10,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Global exception interceptor for REST API controllers.
+ * Intercepts validation and generic runtime errors to format unified JSON error responses.
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
-     * Handles validation errors from @Valid annotated request bodies.
-     * Returns 400 Bad Request with field-level error details.
+     * Handles validation errors from {@code @Valid} annotated request bodies.
+     * Returns a 400 Bad Request with detailed field validation failures.
+     *
+     * @param ex the binding validation exception containing field violations
+     * @return a {@link ResponseEntity} containing validation error details and HTTP 400 status
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationException(
@@ -36,7 +43,11 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Catch-all handler for unexpected errors in controllers.
+     * Catch-all handler for unexpected errors occurring within REST controller executions.
+     * Returns a 500 Internal Server Error response.
+     *
+     * @param ex the unexpected exception
+     * @return a {@link ResponseEntity} containing a generic error message and HTTP 500 status
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {

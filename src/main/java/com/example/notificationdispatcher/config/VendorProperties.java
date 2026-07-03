@@ -7,6 +7,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Data;
 
+/**
+ * Configuration properties class mapping properties prefixed with {@code notification.*} from
+ * {@code application.yml} into strongly typed Java beans. Includes mapping configurations for
+ * outbound vendor endpoints and internal backoff retries.
+ */
 @Data
 @ConfigurationProperties(prefix = "notification")
 public class VendorProperties {

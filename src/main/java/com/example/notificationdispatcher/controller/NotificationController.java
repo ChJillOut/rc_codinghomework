@@ -20,6 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * REST controller providing API endpoints to submit notification tasks from business systems.
+ * Mapped to the root endpoint {@code /api/notifications}.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api")
@@ -34,7 +38,8 @@ public class NotificationController {
      * Validates the request, resolves vendor config, builds a NotificationMessage,
      * and publishes it to RabbitMQ for async processing.
      *
-     * @return 202 Accepted with notification ID
+     * @param request the inbound notification request containing vendor ID, body, and configuration overrides
+     * @return a {@link ResponseEntity} containing the generated notification ID and status (202 Accepted)
      */
     @PostMapping("/notifications")
     public ResponseEntity<Map<String, String>> submitNotification(

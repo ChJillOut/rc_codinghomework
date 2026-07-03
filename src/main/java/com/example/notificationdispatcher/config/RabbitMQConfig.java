@@ -13,6 +13,11 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Spring AMQP Configuration class defining the full RabbitMQ broker topology.
+ * Declares durable exchanges, durable queues, routing bindings, Jackson converters,
+ * and dynamic message TTL-based retry queues.
+ */
 @Configuration
 @RequiredArgsConstructor
 public class RabbitMQConfig {

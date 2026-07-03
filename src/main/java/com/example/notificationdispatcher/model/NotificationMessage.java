@@ -9,6 +9,11 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Map;
 
+/**
+ * Represents the internal message format stored and routed through RabbitMQ queues.
+ * Carries resolved configuration defaults merged with request overrides, execution progress,
+ * and timestamp metadata.
+ */
 @Data
 @Builder
 @NoArgsConstructor

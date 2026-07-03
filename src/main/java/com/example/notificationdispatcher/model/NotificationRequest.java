@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
+/**
+ * Data Transfer Object representing an inbound notification request sent by calling business systems.
+ * Contains vendor information, payload body, and optional HTTP configuration overrides.
+ */
 @Data
 @Builder
 @NoArgsConstructor

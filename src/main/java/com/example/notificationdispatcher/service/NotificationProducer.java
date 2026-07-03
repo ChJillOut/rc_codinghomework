@@ -6,6 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
+/**
+ * Producer service responsible for publishing {@link NotificationMessage} objects to RabbitMQ exchanges
+ * (main exchange, retry exchange, or dead-letter exchange).
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -15,6 +19,8 @@ public class NotificationProducer {
 
     /**
      * Publishes a notification message to the main notification exchange.
+     *
+     * @param message the notification message to publish
      */
     public void send(NotificationMessage message) {
         log.info("Publishing notification to queue, notificationId={} vendorId={}",
@@ -28,6 +34,9 @@ public class NotificationProducer {
 
     /**
      * Publishes a notification message to a specific retry queue.
+     *
+     * @param message the notification message to route
+     * @param retryLevel the target retry level (1, 2, or 3) representing the retry queue
      */
     public void sendToRetry(NotificationMessage message, int retryLevel) {
         String routingKey = "retry." + retryLevel;
@@ -42,6 +51,8 @@ public class NotificationProducer {
 
     /**
      * Publishes a notification message to the dead-letter queue.
+     *
+     * @param message the notification message to move to the DLQ
      */
     public void sendToDlq(NotificationMessage message) {
         log.info("Publishing notification to DLQ, notificationId={} vendorId={} retryCount={}",

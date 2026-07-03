@@ -149,4 +149,23 @@ class NotificationControllerTest {
         assertThat(mergedHeaders).containsEntry("Content-Type", "text/plain");
         assertThat(mergedHeaders).hasSize(3);
     }
+
+    @Test
+    void submitNotification_unexpectedError_returns500() throws Exception {
+        NotificationRequest request = NotificationRequest.builder()
+                .vendorId("ad-system")
+                .body("{\"event\":\"test\"}")
+                .build();
+
+        // Simulate an unexpected runtime exception in the controller/properties bean lookup
+        when(vendorProperties.getVendors()).thenThrow(new RuntimeException("Simulated Database Failure"));
+
+        mockMvc.perform(post("/api/notifications")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.error").value("Internal server error"));
+
+        verify(producer, never()).send(any(NotificationMessage.class));
+    }
 }

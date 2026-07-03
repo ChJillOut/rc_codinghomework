@@ -11,6 +11,10 @@ import org.springframework.web.client.RestClient;
 
 import java.time.Duration;
 
+/**
+ * Dispatcher service responsible for performing HTTP outbound callback dispatches to external vendors
+ * utilizing Spring's synchronous {@link RestClient}. Classifies failures as retryable or permanent.
+ */
 @Slf4j
 @Service
 public class NotificationDispatcher {

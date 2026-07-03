@@ -11,6 +11,10 @@ import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
+/**
+ * Background message listener that consumes {@link NotificationMessage} payloads from the main queue,
+ * triggers external HTTP callback dispatches, and manages manual AMQP acknowledgments, retries, and dead-lettering.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,6 +29,10 @@ public class NotificationConsumer {
      * On success: ACK the message.
      * On retryable failure: route to the appropriate retry queue based on retry count.
      * On permanent failure or max retries exceeded: route to DLQ.
+     *
+     * @param message the consumed notification message payload containing target URLs, headers, and bodies
+     * @param channel the RabbitMQ channel used for manual acknowledgments
+     * @param deliveryTag the delivery tag identifying the message on this channel
      */
     @RabbitListener(queues = "notification.queue")
     public void consume(NotificationMessage message,
@@ -51,6 +59,15 @@ public class NotificationConsumer {
         }
     }
 
+    /**
+     * Handles dispatch failures by either routing to the retry exchange or directly to the DLQ.
+     * Manages manual ACKs for the original message to remove it from the main queue.
+     *
+     * @param message the notification message that failed to dispatch
+     * @param channel the RabbitMQ channel used for manual acknowledgments
+     * @param deliveryTag the delivery tag identifying the message on this channel
+     * @param e the dispatch exception that occurred containing retryable flags and status codes
+     */
     private void handleDispatchFailure(NotificationMessage message,
                                        Channel channel,
                                        long deliveryTag,
