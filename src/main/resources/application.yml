@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: NotificationDispatcher
+  threads:
+    virtual:
+      enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 10
+
+notification:
+  retry:
+    max-retries: 3
+    delays:
+      - 5000
+      - 30000
+      - 120000
+  vendors:
+    ad-system:
+      url: "https://httpbin.org/post"
+      default-headers:
+        Authorization: "Bearer ${AD_SYSTEM_TOKEN:demo-token}"
+        Content-Type: "application/json"
+      timeout-seconds: 10
+    crm-system:
+      url: "https://crm.vendor.com/api/contacts/status"
+      default-headers:
+        X-API-Key: "${CRM_API_KEY:demo-key}"
+        Content-Type: "application/json"
+      timeout-seconds: 15
+    inventory-system:
+      url: "https://inventory.vendor.com/api/stock/update"
+      default-headers:
+        Authorization: "Bearer ${INVENTORY_TOKEN:demo-token}"
+        Content-Type: "application/json"
+      timeout-seconds: 10
